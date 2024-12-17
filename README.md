@@ -1,2 +1,2 @@
-# Cashpoint-App---Backend
- A web application backend for managing loans and budgeting, providing tools for loan calculations, budget tracking, and financial insights.
+# Subscription-Management-App---Backend
+  A Node.js/Express.js backend for a subscription management system.  It leverages MongoDB as the primary database and utilizes Mongoose for efficient data modeling and interaction. Features user management, flexible subscription plans, and secure payment processing.
