@@ -5,6 +5,9 @@ import {
   getSubscriptions,
   findSubscription,
   updateSubscription,
+  cancelSubscription,
+  renewSubscription,
+  inactivateSubscription,
   deleteSubscription
 } from '../controllers/subController.js'; 
 
@@ -12,9 +15,9 @@ const subscriptionRoutes = express.Router(); // Create a new router for subscrip
 
 // Create a new subscription
 subscriptionRoutes.post('/', async (req, res) => {
-  const { userId, planId, paymentMethodId } = req.body; // Destructure the request body
+  const { nameOfSub, userId, planId } = req.body; // Destructure the request body
   try {
-    const newSubscription = await createSubscription(userId, planId, paymentMethodId);
+    const newSubscription = await createSubscription(nameOfSub, userId, planId);
     res.status(201).json({ message: "Subscription created", subscription: newSubscription });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -59,6 +62,48 @@ subscriptionRoutes.put('/:id', async (req, res) => {
     }
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+});
+
+// Cancel a subscription
+subscriptionRoutes.patch('/cancel/:id', async (req, res) => { //changes subscription status to canceled
+  const { id } = req.params;
+  try {
+    const canceledSubscription = await cancelSubscription(id);
+    if (!canceledSubscription) {
+      return res.status(404).json({ message: 'Subscription not found' });
+    }
+    res.status(200).json({ message: 'Subscription canceled successfully', canceledSubscription });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Renew a subscription
+subscriptionRoutes.patch('/renew/:id', async (req, res) => { //changes subscription status to active
+  const { id } = req.params;
+  try {
+    const renewedSubscription = await renewSubscription(id);
+    if (!renewedSubscription) {
+      return res.status(404).json({ message: 'Subscription not found' });
+    }
+    res.status(200).json({ message: 'Subscription renewed successfully', renewedSubscription });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Inactivate a subscription
+subscriptionRoutes.patch('/inactivate/:id', async (req, res) => { // changes subscription status to inactive
+  const { id } = req.params;
+  try {
+    const inactivatedSubscription = await inactivateSubscription(id);
+    if (!inactivatedSubscription) {
+      return res.status(404).json({ message: 'Subscription not found' });
+    }
+    res.status(200).json({ message: 'Subscription inactivated successfully', inactivatedSubscription });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
