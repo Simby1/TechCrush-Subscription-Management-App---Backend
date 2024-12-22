@@ -8,13 +8,13 @@ import planRoutes from "./app/routes/planRoutes.js";
 const app = express();
 app.use(express.json());
 
+// Use the user routes
+app.use("/Users", userRoutes); // Set the base route for user operations
+app.use("/subscriptions", subscriptionRoutes);
+app.use("/plans", planRoutes);
+
 const startServer = async () => {
   await connectToMongoDB();
-
-  // Use the user routes
-  app.use("/Users", userRoutes); // Set the base route for user operations
-  app.use("/subscriptions", subscriptionRoutes);
-  app.use("/plans", planRoutes);
 
   // Start server
   app.listen(3000, () => {
