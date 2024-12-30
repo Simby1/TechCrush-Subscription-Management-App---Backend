@@ -21,6 +21,14 @@ const subscriptionSchema = new mongoose.Schema({
         type: Date,
         required: true
       }, 
+      renewalDate: {
+        type: Date,
+        required: true
+      },
+      price: {
+        type: Number,
+        required: true,
+      },
       status: { 
         type: String, 
         enum: ['active', 'inactive', 'canceled', 'expired' ], // restricts the possible values for the status field
