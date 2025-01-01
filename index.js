@@ -16,6 +16,14 @@ import { notFound as notFoundMiddleware } from "./middleware/not-found.js";
 import { errorHandlerMiddleware } from "./middleware/error-handler.js";
 
 const app = express();
+
+// Create a write stream for logs
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const logStream = fs.createWriteStream(path.join(__dirname, "sma.log"), {
+  flags: "a",
+}); // Append logs to the file "sma.log"
+app.use(morgan("combined", { stream: logStream }));
+
 app.use(express.json());
 
 // Use the user routes
