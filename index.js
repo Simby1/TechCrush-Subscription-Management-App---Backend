@@ -24,6 +24,15 @@ const logStream = fs.createWriteStream(path.join(__dirname, "sma.log"), {
 }); // Append logs to the file "sma.log"
 app.use(morgan("combined", { stream: logStream }));
 
+// Rate limiting security functionality
+app.use(helmet());
+let limiter = rateLimit({
+  max: 1000,
+  windowMs: 60 * 60 * 1000,
+  message:
+    "We have received too many requests from this IP. Please try again after one hour.",
+});
+
 app.use(express.json());
 
 // Use the user routes
