@@ -35,11 +35,13 @@ let limiter = rateLimit({
 
 app.use("/api", limiter);
 app.use(express.json({ limit: "10kb" }));
-
-// Use the user routes
-app.use("/Users", userRoutes); // Set the base route for user operations
-app.use("/subscriptions", subscriptionRoutes);
-app.use("/plans", planRoutes);
+app.use("/api/v1/subscriptions", subscriptionRoutes);
+app.use("/api/v1/plans", planRoutes);
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/tasks", tasks);
+app.use(notFoundMiddleware);
+app.use(errorHandlerMiddleware);
 
 const port = process.env.PORT || 3000;
 
