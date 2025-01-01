@@ -12,8 +12,8 @@ import { router as userRouter } from "./app/routes/userRoutes.js";
 import connectToMongoDB from "./app/configuration/mongoDBconn.js";
 import subscriptionRoutes from "./app/routes/subscriptionRoutes.js";
 import planRoutes from "./app/routes/planRoutes.js";
-import { notFound as notFoundMiddleware } from "./middleware/not-found.js";
-import { errorHandlerMiddleware } from "./middleware/error-handler.js";
+import { notFound as notFoundMiddleware } from "./app/middleware/not-found.js";
+import { errorHandlerMiddleware } from "./app/middleware/error-handler.js";
 
 const app = express();
 
@@ -39,7 +39,6 @@ app.use("/api/v1/subscriptions", subscriptionRoutes);
 app.use("/api/v1/plans", planRoutes);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
-app.use("/api/v1/tasks", tasks);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
