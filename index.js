@@ -33,7 +33,8 @@ let limiter = rateLimit({
     "We have received too many requests from this IP. Please try again after one hour.",
 });
 
-app.use(express.json());
+app.use("/api", limiter);
+app.use(express.json({ limit: "10kb" }));
 
 // Use the user routes
 app.use("/Users", userRoutes); // Set the base route for user operations
