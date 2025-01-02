@@ -24,9 +24,10 @@ const logStream = fs.createWriteStream(path.join(__dirname, "sma.log"), {
   flags: "a",
 }); // Append logs to the file "sma.log"
 app.use(morgan("combined", { stream: logStream }));
-
-// Rate limiting security functionality
 app.use(helmet());
+// Enable trust proxy to correctly handle X-Forwarded-For header
+app.use("trust proxy", 1);
+// Rate limiting security functionality
 let limiter = rateLimit({
   max: 1000,
   windowMs: 60 * 60 * 1000,
