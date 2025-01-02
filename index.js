@@ -1,6 +1,7 @@
 import express from "express";
 import helmet from "helmet";
 import { rateLimit } from "express-rate-limit";
+import cors from "cors";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -32,6 +33,7 @@ let limiter = rateLimit({
   message:
     "We have received too many requests from this IP. Please try again after one hour.",
 });
+app.use(cors());
 
 app.use("/api", limiter);
 app.use(express.json({ limit: "10kb" }));
