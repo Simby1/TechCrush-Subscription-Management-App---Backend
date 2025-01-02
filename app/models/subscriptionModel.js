@@ -7,12 +7,16 @@ const subscriptionSchema = new mongoose.Schema({
         ref: 'User', 
         required: true 
       }, 
+      notificationSent: {
+        type: Boolean,
+        default: false,
+      },
       planId: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Plan', 
         required: true 
       },
-      startDate: { 
+      startDate: {
         type: Date, 
         required: true, 
         default: Date.now 
