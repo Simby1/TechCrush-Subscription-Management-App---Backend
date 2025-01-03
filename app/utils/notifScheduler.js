@@ -2,7 +2,6 @@ import sgMail from "@sendgrid/mail";
 // import Notification from "../models/notification.js";
 import Subscription from "../models/subscriptionModel.js";
 import {User} from "../models/userModel.js";
-import cron from "node-cron";
 
 
 // Set SendGrid API key

@@ -14,7 +14,6 @@ import {scheduleNotifications}  from "./app/utils/notifScheduler.js";
 import notificationRoutes from './app/routes/notificationRoutes.js';
 import connectToMongoDB from "./app/configuration/mongoDBconn.js";
 //importing database routes
-// import {userRoutes} from "./app/routes/userRoutes.js"; 
 import subscriptionRoutes from "./app/routes/subscriptionRoutes.js";
 import planRoutes from "./app/routes/planRoutes.js";
 import { notFound as notFoundMiddleware } from "./app/middleware/not-found.js";
@@ -49,9 +48,8 @@ app.use("/api/v1/user", userRouter);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 // Use the user routes
-// app.use("/Users", userRoutes); // Set the base route for user operations
-app.use("/subscriptions", subscriptionRoutes);
-app.use("/plans", planRoutes);
+
+
 app.use('/notifications', notificationRoutes);
 
 // Validate critical environment variables
@@ -64,7 +62,7 @@ const port = process.env.PORT || 3000;
 
 const start = async () => {
   try {
-    await connectToMongoDB(process.env.MONGODB_URI);
+    await connectToMongoDB(process.env.MONGO_URI);
     console.log("CONNECTED TO THE DB...");
     app.listen(port, () =>
       console.log(`Server is listening on port ${port}...`)
