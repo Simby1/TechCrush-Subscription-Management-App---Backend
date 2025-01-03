@@ -22,7 +22,6 @@ import { notFound as notFoundMiddleware } from "./app/middleware/not-found.js";
 import { errorHandlerMiddleware } from "./app/middleware/error-handler.js";
 
 const app = express();
-app.use(express.json());
 
 // Swagger configuration
 const options = {
@@ -75,6 +74,9 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
+// Use the user routes
+
+
 app.use('/notifications', notificationRoutes);
 
 // Validate critical environment variables
@@ -83,7 +85,9 @@ if (!process.env.SENDGRID_API_KEY) {
   process.exit(1); // Exit the process if the API key is missing
 }  
 
-const startServer = async () => {
+const port = process.env.PORT || 3000;
+
+const start = async () => {
   try {
     await connectToMongoDB(process.env.MONGO_URI);
     console.log("CONNECTED TO THE DB...");
