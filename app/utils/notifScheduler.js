@@ -15,7 +15,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const sendReminderEmail = async (subscription, userEmail) => {
   const msg = {
     to: userEmail,
-    from: process.env.EMAIL_USER, 
+    from: 'TSMA Support<support@tsma.com>', 
     subject: `Reminder: Your ${subscription.nameOfSub} subscription is expiring soon`,
     text: `Hi, your subscription for ${subscription.nameOfSub} will expire on ${subscription.endDate.toDateString()}. Please take action to renew or cancel as necessary.`,
   };
