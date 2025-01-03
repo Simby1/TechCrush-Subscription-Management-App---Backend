@@ -13,6 +13,99 @@ import {
 
 const subscriptionRoutes = express.Router(); // Create a new router for subscriptions
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Subscription:
+ *       type: object
+ *       properties:
+ *         nameOfSub:
+ *           type: string
+ *           description: Name of the service being subscribed to.
+ *         userId:
+ *           type: string
+ *           description: ID of the user subscribing.
+ *         planId:
+ *           type: string
+ *           description: ID of the plan being subscribed to.
+ *         startDate:
+ *           type: string
+ *           format: date-time
+ *           description: Start date of the subscription.
+ *         endDate:
+ *           type: string
+ *           format: date-time
+ *           description: End date of the subscription.
+ *         renewalDate:
+ *           type: string
+ *           format: date-time
+ *           description: Renewal date of the subscription.
+ *         price:
+ *           type: number
+ *           description: Price of the subscription.
+ *         status:
+ *           type: string
+ *           enum: ['active', 'inactive', 'canceled', 'expired']
+ *           description: Status of the subscription.
+ *     SubscriptionRequest: # For POST requests
+ *       type: object
+ *       properties:
+ *         nameOfSub:
+ *           type: string
+ *           description: Name of the service being subscribed to.
+ *         userId:
+ *           type: string
+ *           description: ID of the user subscribing.
+ *         planId:
+ *           type: string
+ *           description: ID of the plan being subscribed to.
+ *         endDate:
+ *           type: string
+ *           format: date-time
+ *           description: End date of the subscription.
+ *         renewalDate:
+ *           type: string
+ *           format: date-time
+ *           description: Renewal date of the subscription.
+ *         price:
+ *           type: number
+ *           description: Price of the subscription.
+ */
+
+/**
+ * @swagger
+ * /subscriptions:
+ *   post:
+ *     summary: Create a new subscription
+ *     tags: [Subscriptions]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *     responses:
+ *       201:
+ *         description: Subscription created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 subscription:
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+
 // Create a new subscription
 subscriptionRoutes.post('/', async (req, res) => {
   const { nameOfSub, userId, planId, endDate, renewalDate, price  } = req.body; // Destructure the request body. startDate not included cuz it automatically sets to now
