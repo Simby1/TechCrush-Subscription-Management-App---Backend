@@ -22,7 +22,8 @@ import { notFound as notFoundMiddleware } from "./app/middleware/not-found.js";
 import { errorHandlerMiddleware } from "./app/middleware/error-handler.js";
 
 const app = express();
-
+// Enable trust proxy to correctly handle X-Forwarded-For header
+app.set("trust proxy", 1);
 // Swagger configuration
 const options = {
   definition: {
