@@ -13,7 +13,100 @@ import {
 
 const subscriptionRoutes = express.Router(); // Create a new router for subscriptions
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Subscription:
+ *       type: object
+ *       properties:
+ *         nameOfSub:
+ *           type: string
+ *           description: Name of the service being subscribed to.
+ *         userId:
+ *           type: string
+ *           description: ID of the user subscribing.
+ *         planId:
+ *           type: string
+ *           description: ID of the plan being subscribed to.
+ *         startDate:
+ *           type: string
+ *           format: date-time
+ *           description: Start date of the subscription.
+ *         endDate:
+ *           type: string
+ *           format: date-time
+ *           description: End date of the subscription.
+ *         renewalDate:
+ *           type: string
+ *           format: date-time
+ *           description: Renewal date of the subscription.
+ *         price:
+ *           type: number
+ *           description: Price of the subscription.
+ *         status:
+ *           type: string
+ *           enum: ['active', 'inactive', 'canceled', 'expired']
+ *           description: Status of the subscription.
+ *     SubscriptionRequest: # For POST requests
+ *       type: object
+ *       properties:
+ *         nameOfSub:
+ *           type: string
+ *           description: Name of the service being subscribed to.
+ *         userId:
+ *           type: string
+ *           description: ID of the user subscribing.
+ *         planId:
+ *           type: string
+ *           description: ID of the plan being subscribed to.
+ *         endDate:
+ *           type: string
+ *           format: date-time
+ *           description: End date of the subscription.
+ *         renewalDate:
+ *           type: string
+ *           format: date-time
+ *           description: Renewal date of the subscription.
+ *         price:
+ *           type: number
+ *           description: Price of the subscription.
+ */
+
 // Create a new subscription
+/**
+ * @swagger
+ * /subscriptions:
+ *   post:
+ *     summary: Create a new subscription
+ *     tags: [Subscriptions]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *     responses:
+ *       201:
+ *         description: Subscription created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 subscription:
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+
 subscriptionRoutes.post('/', async (req, res) => {
   const { nameOfSub, userId, planId, endDate, renewalDate, price  } = req.body; // Destructure the request body. startDate not included cuz it automatically sets to now
   try {
@@ -25,6 +118,32 @@ subscriptionRoutes.post('/', async (req, res) => {
 });
 
 // Get all subscriptions
+/**
+ * @swagger
+ * /subscriptions:
+ *   get:
+ *     summary: Retrieve all subscriptions
+ *     tags: [Subscriptions]
+ *     responses:
+ *       200:
+ *         description: A list of subscriptions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Subscription'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+
 subscriptionRoutes.get('/', async (req, res) => {
   try {
     const subscriptions = await getSubscriptions();
@@ -35,6 +154,46 @@ subscriptionRoutes.get('/', async (req, res) => {
 });
 
 // Find a subscription by ID
+/**
+ * @swagger
+ * /subscriptions/{id}:
+ *   get:
+ *     summary: Find a subscription by ID
+ *     tags: [Subscriptions]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the subscription to retrieve
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Subscription found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Subscription'
+ *       404:
+ *         description: Subscription not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+
 subscriptionRoutes.get('/:id', async (req, res) => {
   const { id } = req.params; // Gets the subscription ID from the request parameters
   try {
@@ -50,6 +209,52 @@ subscriptionRoutes.get('/:id', async (req, res) => {
 });
 
 // Update a subscription
+/**
+ * @swagger
+ * /subscriptions/{id}:
+ *   put:
+ *     summary: Update a subscription
+ *     tags: [Subscriptions]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the subscription to update
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SubscriptionRequest'
+ *     responses:
+ *       200:
+ *         description: Subscription updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Subscription'
+ *       404:
+ *         description: Subscription not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+
 subscriptionRoutes.put('/:id', async (req, res) => {
   const { id } = req.params; 
   const updates = req.body; 
@@ -66,6 +271,46 @@ subscriptionRoutes.put('/:id', async (req, res) => {
 });
 
 // Cancel a subscription
+/**
+ * @swagger
+ * /subscriptions/cancel/{id}:
+ *   patch:
+ *     summary: Cancel a subscription
+ *     tags: [Subscriptions]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the subscription to cancel
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Subscription canceled successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Subscription'
+ *       404:
+ *         description: Subscription not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+
 subscriptionRoutes.patch('/cancel/:id', async (req, res) => { //changes subscription status to canceled
   const { id } = req.params;
   try {
@@ -80,6 +325,46 @@ subscriptionRoutes.patch('/cancel/:id', async (req, res) => { //changes subscrip
 });
 
 // Renew a subscription
+/**
+ * @swagger
+ * /subscriptions/renew/{id}:
+ *   patch:
+ *     summary: Renew a subscription
+ *     tags: [Subscriptions]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the subscription to renew
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Subscription renewed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Subscription'
+ *       404:
+ *         description: Subscription not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+
 subscriptionRoutes.patch('/renew/:id', async (req, res) => { //changes subscription status to active
   const { id } = req.params;
   try {
@@ -94,6 +379,46 @@ subscriptionRoutes.patch('/renew/:id', async (req, res) => { //changes subscript
 });
 
 // Inactivate a subscription
+/**
+ * @swagger
+ * /subscriptions/inactivate/{id}:
+ *   patch:
+ *     summary: Inactivate a subscription
+ *     tags: [Subscriptions]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the subscription to inactivate
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Subscription inactivated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Subscription'
+ *       404:
+ *         description: Subscription not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+
 subscriptionRoutes.patch('/inactivate/:id', async (req, res) => { // changes subscription status to inactive
   const { id } = req.params;
   try {
@@ -108,6 +433,49 @@ subscriptionRoutes.patch('/inactivate/:id', async (req, res) => { // changes sub
 });
 
 // Delete a subscription
+/**
+ * @swagger
+ * /subscriptions/{id}:
+ *   delete:
+ *     summary: Delete a subscription
+ *     tags: [Subscriptions]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the subscription to delete
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Subscription deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: Subscription not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+
 subscriptionRoutes.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {

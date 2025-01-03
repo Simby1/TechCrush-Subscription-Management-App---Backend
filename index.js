@@ -16,11 +16,38 @@ import connectToMongoDB from "./app/configuration/mongoDBconn.js";
 //importing database routes
 import subscriptionRoutes from "./app/routes/subscriptionRoutes.js";
 import planRoutes from "./app/routes/planRoutes.js";
+import swaggerUi from 'swagger-ui-express'; // Import swagger-ui-express
+import swaggerJsdoc from 'swagger-jsdoc'; // Import swagger-jsdoc
 import { notFound as notFoundMiddleware } from "./app/middleware/not-found.js";
 import { errorHandlerMiddleware } from "./app/middleware/error-handler.js";
 
 const app = express();
 
+// Swagger configuration
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'TechCrush Subscription Management App',
+      version: '1.0.0',
+      description: 'TechCrush Subscription Management App Database API',
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000', 
+      },
+    ],
+  },
+  apis: ['./app/routes/*.js'], // references all jsdoc comments in all files under routes
+};
+
+const specs = swaggerJsdoc(options);
+
+// Serve Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs)); 
+
+// Use the other routes
+app.use("/users", userRouter);
 // Create a write stream for logs
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const logStream = fs.createWriteStream(path.join(__dirname, "sma.log"), {
