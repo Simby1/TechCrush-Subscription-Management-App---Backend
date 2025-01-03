@@ -10,13 +10,18 @@ import "express-async-errors";
 import "dotenv/config";
 import { router as authRouter } from "./app/routes/authRoutes.js";
 import { router as userRouter } from "./app/routes/userRoutes.js";
+import {scheduleNotifications}  from "./app/utils/notifScheduler.js";
+import notificationRoutes from './app/routes/notificationRoutes.js';
 import connectToMongoDB from "./app/configuration/mongoDBconn.js";
+//importing database routes
+import userRoutes from "./app/routes/userRoutes.js"; 
 import subscriptionRoutes from "./app/routes/subscriptionRoutes.js";
 import planRoutes from "./app/routes/planRoutes.js";
 import { notFound as notFoundMiddleware } from "./app/middleware/not-found.js";
 import { errorHandlerMiddleware } from "./app/middleware/error-handler.js";
 
 const app = express();
+app.use(express.json());
 
 // Create a write stream for logs
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -44,10 +49,19 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
+// Use the user routes
+app.use("/Users", userRoutes); // Set the base route for user operations
+app.use("/subscriptions", subscriptionRoutes);
+app.use("/plans", planRoutes);
+app.use('/notifications', notificationRoutes);
 
-const port = process.env.PORT || 3000;
+// Validate critical environment variables
+if (!process.env.SENDGRID_API_KEY) {
+  console.error("Missing SENDGRID_API_KEY in environment variables.");
+  process.exit(1); // Exit the process if the API key is missing
+}  
 
-const start = async () => {
+const startServer = async () => {
   try {
     await connectToMongoDB(process.env.MONGO_URI);
     console.log("CONNECTED TO THE DB...");
@@ -58,6 +72,9 @@ const start = async () => {
     console.log("DB Connection Error: ", err);
     process.exit(1);
   }
+  scheduleNotifications()
+
+  
 };
 
 start();
