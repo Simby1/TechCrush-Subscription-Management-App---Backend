@@ -10,8 +10,8 @@ import "express-async-errors";
 import "dotenv/config";
 import { router as authRouter } from "./app/routes/authRoutes.js";
 import { router as userRouter } from "./app/routes/userRoutes.js";
-import {scheduleNotifications}  from "./app/utils/notifScheduler.js";
-import notificationRoutes from './app/routes/notificationRoutes.js';
+import { scheduleNotifications } from "./app/utils/notifScheduler.js";
+import notificationRoutes from "./app/routes/notificationRoutes.js";
 import connectToMongoDB from "./app/configuration/mongoDBconn.js";
 //importing database routes
 import subscriptionRoutes from "./app/routes/subscriptionRoutes.js";
@@ -20,7 +20,8 @@ import { notFound as notFoundMiddleware } from "./app/middleware/not-found.js";
 import { errorHandlerMiddleware } from "./app/middleware/error-handler.js";
 
 const app = express();
-
+// Enable trust proxy to correctly handle X-Forwarded-For header
+app.set("trust proxy", 1);
 // Create a write stream for logs
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const logStream = fs.createWriteStream(path.join(__dirname, "sma.log"), {
@@ -28,8 +29,6 @@ const logStream = fs.createWriteStream(path.join(__dirname, "sma.log"), {
 }); // Append logs to the file "sma.log"
 app.use(morgan("combined", { stream: logStream }));
 app.use(helmet());
-// Enable trust proxy to correctly handle X-Forwarded-For header
-app.set("trust proxy", 1);
 // Rate limiting security functionality
 let limiter = rateLimit({
   max: 1000,
@@ -49,14 +48,13 @@ app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 // Use the user routes
 
-
-app.use('/notifications', notificationRoutes);
+app.use("/notifications", notificationRoutes);
 
 // Validate critical environment variables
 if (!process.env.SENDGRID_API_KEY) {
   console.error("Missing SENDGRID_API_KEY in environment variables.");
   process.exit(1); // Exit the process if the API key is missing
-}  
+}
 
 const port = process.env.PORT || 3000;
 
@@ -71,9 +69,7 @@ const start = async () => {
     console.log("DB Connection Error: ", err);
     process.exit(1);
   }
-  scheduleNotifications()
-
-  
+  scheduleNotifications();
 };
 
 start();
