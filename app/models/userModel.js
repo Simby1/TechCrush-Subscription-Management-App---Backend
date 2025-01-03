@@ -121,6 +121,4 @@ userSchema.methods.sanitize = function () {
 };
 
 // Create and export the user model
-const User = mongoose.model("User", userSchema);
-
-export default User;
+export const User = mongoose.model("User", userSchema);

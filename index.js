@@ -100,10 +100,6 @@ const start = async () => {
   }
   scheduleNotifications()
 
-  // Start server
-  app.listen(3000, () => {
-    console.log("Server started on port 3000. Swagger UI available at /api-docs"); // Helpful message
-  });
   
 };
 
