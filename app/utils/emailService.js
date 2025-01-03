@@ -1,24 +1,19 @@
-import nodemailer from "nodemailer";
+import sgMail from "@sendgrid/mail";
 
-const sendEmail = async (option) => {
-  // Create a transporter
-  const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-  });
-  // Define email options
-  const emailOptions = {
-    from: "SubNotify support<support@subnotify.com>",
+const sendEmail_SendGrid = async (option) => {
+  // Set sendgrid API key
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+  // Email details
+  const msg = {
     to: option.email,
+    from: "TSMA Support<support@tsma.com>",
     subject: option.subject,
     text: option.text,
     html: option.message,
   };
-  await transporter.sendMail(emailOptions);
+
+  await sgMail.send(msg);
 };
 
-export default sendEmail;
+export default sendEmail_SendGrid;
