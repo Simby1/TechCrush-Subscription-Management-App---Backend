@@ -1,7 +1,7 @@
 import {User}  from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import { createCustomError } from "../utils/custom-error.js";
-import sendEmail from "../utils/emailService.js";
+import sendEmail_SendGrid from "../utils/emailService.js";
 import {
   altPasswordResetEmailTemplate,
   passwordResetEmailTemplate,
@@ -131,7 +131,7 @@ export const forgotPassword = async (req, res, next) => {
   const altText = altPasswordResetEmailTemplate(user.name, resetURL);
   // Attempt to send the email
   try {
-    await sendEmail({
+    await sendEmail_SendGrid({
       email: user.email,
       subject: "Password Reset Request",
       message: message || altText,
