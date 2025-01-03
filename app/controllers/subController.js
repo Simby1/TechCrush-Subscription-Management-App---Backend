@@ -7,6 +7,9 @@ export const createSubscription = async ( nameOfSub, userId, planId ) => {
     userId,
     planId,
     startDate: new Date(), // Automatically sets the start date to now
+    endDate,
+    renewalDate,
+    price,
     status: 'active' // Default status
   });
 

@@ -15,9 +15,9 @@ const subscriptionRoutes = express.Router(); // Create a new router for subscrip
 
 // Create a new subscription
 subscriptionRoutes.post('/', async (req, res) => {
-  const { nameOfSub, userId, planId } = req.body; // Destructure the request body
+  const { nameOfSub, userId, planId, endDate, renewalDate, price  } = req.body; // Destructure the request body. startDate not included cuz it automatically sets to now
   try {
-    const newSubscription = await createSubscription(nameOfSub, userId, planId);
+    const newSubscription = await createSubscription(nameOfSub, userId, planId, endDate, renewalDate, price );
     res.status(201).json({ message: "Subscription created", subscription: newSubscription });
   } catch (error) {
     res.status(400).json({ error: error.message });
