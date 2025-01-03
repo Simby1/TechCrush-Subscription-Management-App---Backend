@@ -9,7 +9,72 @@ import {
 
 const planRoutes = express.Router(); 
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Plan:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: Name of the subscription plan.
+ *         description:
+ *           type: string
+ *           description: Description of the plan.
+ *         price:
+ *           type: number
+ *           description: Price of the plan.
+ *         interval:
+ *           type: string
+ *           enum: ["monthly", "yearly"]
+ *           description: Billing interval for the plan.
+ *         features:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: List of features included in the plan.
+ *         trialDays:
+ *           type: number
+ *           description: Number of trial days for the plan.
+ */
+
 // Create a new plan
+/**
+ * @swagger
+ * /plans:
+ *   post:
+ *     summary: Create a new plan
+ *     tags: [Plans]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Plan'
+ *     responses:
+ *       201:
+ *         description: Plan created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 plan:
+ *                   $ref: '#/components/schemas/Plan'
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+
 planRoutes.post('/', async (req, res) => {
   const planData = req.body;
   try {
@@ -21,6 +86,32 @@ planRoutes.post('/', async (req, res) => {
 });
 
 // Get all plans
+/**
+ * @swagger
+ * /plans:
+ *   get:
+ *     summary: Retrieve all plans
+ *     tags: [Plans]
+ *     responses:
+ *       200:
+ *         description: A list of plans
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Plan'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+
 planRoutes.get('/', async (req, res) => {
   try {
     const plans = await getPlans(); 
@@ -31,6 +122,46 @@ planRoutes.get('/', async (req, res) => {
 });
 
 // Find a plan by ID
+/**
+ * @swagger
+ * /plans/{id}:
+ *   get:
+ *     summary: Find a plan by ID
+ *     tags: [Plans]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the plan to retrieve
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Plan found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Plan'
+ *       404:
+ *         description: Plan not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+
 planRoutes.get('/:id', async (req, res) => {
   const { id } = req.params; 
   try {
@@ -46,6 +177,55 @@ planRoutes.get('/:id', async (req, res) => {
 });
 
 // Update a plan by ID
+/**
+ * @swagger
+ * /plans/{id}:
+ *   put:
+ *     summary: Update a plan by ID
+ *     tags: [Plans]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the plan to update
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Plan'
+ *     responses:
+ *       200:
+ *         description: Plan updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: Plan not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+
 planRoutes.put('/:id', async (req, res) => {
   const { id } = req.params; 
   const updates = req.body; 
@@ -62,6 +242,49 @@ planRoutes.put('/:id', async (req, res) => {
 });
 
 // Delete a plan by ID
+/**
+ * @swagger
+ * /plans/{id}:
+ *   delete:
+ *     summary: Delete a plan by ID
+ *     tags: [Plans]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the plan to delete
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Plan deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: Plan not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+
 planRoutes.delete('/:id', async (req, res) => {
   const { id } = req.params; 
   try {
