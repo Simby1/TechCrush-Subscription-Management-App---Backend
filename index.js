@@ -2,10 +2,8 @@ import express from "express";
 import helmet from "helmet";
 import { rateLimit } from "express-rate-limit";
 import cors from "cors";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-import morgan from "morgan";
+import requestLogger from "./app/utils/requestLogger.js";
+import logger from "./app/utils/logger.js";
 import "express-async-errors";
 import "dotenv/config";
 import { router as authRouter } from "./app/routes/authRoutes.js";
@@ -49,12 +47,10 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 // Use the other routes
 app.use("/users", userRouter);
-// Create a write stream for logs
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const logStream = fs.createWriteStream(path.join(__dirname, "sma.log"), {
-  flags: "a",
-}); // Append logs to the file "sma.log"
-app.use(morgan("combined", { stream: logStream }));
+// Log HTTP requests
+app.use(requestLogger);
+
+// Security middleware
 app.use(helmet());
 // Rate limiting security functionality
 let limiter = rateLimit({
@@ -79,7 +75,7 @@ app.use("/notifications", notificationRoutes);
 
 // Validate critical environment variables
 if (!process.env.SENDGRID_API_KEY) {
-  console.error("Missing SENDGRID_API_KEY in environment variables.");
+  logger.error("Missing SENDGRID_API_KEY in environment variables.");
   process.exit(1); // Exit the process if the API key is missing
 }
 
@@ -88,12 +84,12 @@ const port = process.env.PORT || 3000;
 const start = async () => {
   try {
     await connectToMongoDB(process.env.MONGO_URI);
-    console.log("CONNECTED TO THE DB...");
+    logger.info("CONNECTED TO THE DB...");
     app.listen(port, () =>
-      console.log(`Server is listening on port ${port}...`)
+      logger.info(`Server is listening on port ${port}...`)
     );
   } catch (err) {
-    console.log("DB Connection Error: ", err);
+    logger.error("DB Connection Error: ", err);
     process.exit(1);
   }
   scheduleNotifications();
