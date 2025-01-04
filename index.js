@@ -20,18 +20,19 @@ import { notFound as notFoundMiddleware } from "./app/middleware/not-found.js";
 import { errorHandlerMiddleware } from "./app/middleware/error-handler.js";
 
 const app = express();
-// Enable trust proxy to correctly handle X-Forwarded-For header
-app.set("trust proxy", 1);
 
 // Enable CORS
 app.use(cors());
 // Handle preflight requests for CORS
-app.options("*", (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.sendStatus(200);
-});
+app.options("*", cors());
+// Enable trust proxy to correctly handle X-Forwarded-For header
+app.set("trust proxy", 1);
+// app.options("*", (req, res) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+//   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   res.sendStatus(200);
+// });
 // Swagger configuration
 const options = {
   definition: {
