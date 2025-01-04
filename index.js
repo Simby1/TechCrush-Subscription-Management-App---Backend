@@ -21,7 +21,7 @@ import { errorHandlerMiddleware } from "./app/middleware/error-handler.js";
 const app = express();
 
 // Enable CORS
-app.use(cors());
+// app.use(cors());
 
 // Enable trust proxy to correctly handle X-Forwarded-For header
 app.set("trust proxy", 1);
@@ -35,6 +35,25 @@ let limiter = rateLimit({
 
 app.use("/api", limiter);
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+
+// Enable CORS
+app.use(
+  cors({
+    origin: "https://editor.swagger.io", // Change this to your frontend's origin
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // if your requests need credentials (e.g., cookies)
+  })
+);
+
+// Handle preflight requests for CORS
+app.options("*", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.sendStatus(200);
+});
+
 // Swagger configuration
 const options = {
   definition: {
