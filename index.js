@@ -11,7 +11,6 @@ import { router as userRouter } from "./app/routes/userRoutes.js";
 import { scheduleNotifications } from "./app/utils/notifScheduler.js";
 import notificationRoutes from "./app/routes/notificationRoutes.js";
 import connectToMongoDB from "./app/configuration/mongoDBconn.js";
-//importing database routes
 import subscriptionRoutes from "./app/routes/subscriptionRoutes.js";
 import planRoutes from "./app/routes/planRoutes.js";
 import swaggerUi from "swagger-ui-express"; // Import swagger-ui-express
@@ -23,16 +22,19 @@ const app = express();
 
 // Enable CORS
 app.use(cors());
-// Handle preflight requests for CORS
-app.options("*", cors());
+
 // Enable trust proxy to correctly handle X-Forwarded-For header
 app.set("trust proxy", 1);
-// app.options("*", (req, res) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-//   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-//   res.sendStatus(200);
-// });
+// Rate limiting security functionality
+let limiter = rateLimit({
+  max: 1000,
+  windowMs: 60 * 60 * 1000,
+  message:
+    "We have received too many requests from this IP. Please try again after one hour.",
+});
+
+app.use("/api", limiter);
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 // Swagger configuration
 const options = {
   definition: {
@@ -56,33 +58,21 @@ const specs = swaggerJsdoc(options);
 // Serve Swagger UI
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
-// Use the other routes
-app.use("/users", userRouter);
 // Log HTTP requests
 app.use(requestLogger);
 
 // Security middleware
 app.use(helmet());
-// Rate limiting security functionality
-let limiter = rateLimit({
-  max: 1000,
-  windowMs: 60 * 60 * 1000,
-  message:
-    "We have received too many requests from this IP. Please try again after one hour.",
-});
-app.use(cors());
 
-app.use("/api", limiter);
 app.use(express.json({ limit: "10kb" }));
 app.use("/api/v1/subscriptions", subscriptionRoutes);
+app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/plans", planRoutes);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 // Use the user routes
-
-app.use("/notifications", notificationRoutes);
 
 // Validate critical environment variables
 if (!process.env.SENDGRID_API_KEY) {
