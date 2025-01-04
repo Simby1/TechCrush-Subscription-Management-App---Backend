@@ -24,6 +24,9 @@ import { errorHandlerMiddleware } from "./app/middleware/error-handler.js";
 const app = express();
 // Enable trust proxy to correctly handle X-Forwarded-For header
 app.set("trust proxy", 1);
+
+// Enable CORS
+app.use(cors());
 // Swagger configuration
 const options = {
   definition: {
