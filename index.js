@@ -27,6 +27,13 @@ app.set("trust proxy", 1);
 
 // Enable CORS
 app.use(cors());
+// Handle preflight requests for CORS
+app.options("*", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.sendStatus(200);
+});
 // Swagger configuration
 const options = {
   definition: {
