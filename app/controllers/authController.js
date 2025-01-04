@@ -1,4 +1,4 @@
-import {User}  from "../models/userModel.js";
+import { User } from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import { createCustomError } from "../utils/custom-error.js";
 import sendEmail_SendGrid from "../utils/emailService.js";
@@ -74,7 +74,6 @@ export const protectRoute = async (req, res, next) => {
     token,
     process.env.SECRET_STR
   );
-  console.log(decodedToken);
   // 3. Check if the user exists
   const user = await User.findById(decodedToken.id);
   if (!user) {
@@ -144,6 +143,7 @@ export const forgotPassword = async (req, res, next) => {
     user.resetPasswordToken = undefined;
     user.resetPasswordTokenExpires = undefined;
     await user.save({ validateBeforeSave: false });
+    console.error("Error sending password reset email:", error);
     next(
       createCustomError(
         "An error occurred while sending password reset email. Please try again later.",
