@@ -6,9 +6,13 @@ import crypto from "crypto";
 // Define the user schema
 const userSchema = new mongoose.Schema(
   {
-    name: {
+    firstName: {
       type: String,
-      required: [true, "Please enter your name."],
+      required: [true, "Please enter your first name."],
+    },
+    lastName: {
+      type: String,
+      required: [true, "Please enter your last name."],
     },
     email: {
       type: String,

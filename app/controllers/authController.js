@@ -126,8 +126,8 @@ export const forgotPassword = async (req, res, next) => {
     "host"
   )}/api/v1/users/resetPassword/${resetToken}`;
   // Construct the email message
-  const message = passwordResetEmailTemplate(user.name, resetURL);
-  const altText = altPasswordResetEmailTemplate(user.name, resetURL);
+  const message = passwordResetEmailTemplate(user.firstName, resetURL);
+  const altText = altPasswordResetEmailTemplate(user.firstName, resetURL);
   // Attempt to send the email
   try {
     await sendEmail_SendGrid({
