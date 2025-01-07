@@ -21,7 +21,7 @@ import { errorHandlerMiddleware } from "./app/middleware/error-handler.js";
 const app = express();
 
 // Enable CORS
-// app.use(cors());
+app.use(cors());
 
 // Enable trust proxy to correctly handle X-Forwarded-For header
 // app.set("trust proxy", 1);
