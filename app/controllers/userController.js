@@ -1,4 +1,4 @@
-import { User }  from "../models/userModel.js";
+import { User } from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import { createCustomError } from "../utils/custom-error.js";
 import util from "util";
@@ -68,7 +68,7 @@ export const updateProfile = async (req, res, next) => {
     );
   }
   // Filter the request body
-  const filterObj = filterReqObj(req.body, "name", "email");
+  const filterObj = filterReqObj(req.body, "firstName", "lastName", "email");
   // Update user profile
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filterObj, {
     new: true,
