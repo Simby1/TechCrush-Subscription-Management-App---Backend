@@ -76,7 +76,7 @@ const subscriptionRoutes = express.Router(); // Create a new router for subscrip
 // Create a new subscription
 /**
  * @swagger
- * /subscriptions:
+ * /api/v1/subscriptions/createSubscription:
  *   post:
  *     summary: Create a new subscription
  *     tags: [Subscriptions]
@@ -107,7 +107,7 @@ const subscriptionRoutes = express.Router(); // Create a new router for subscrip
  *                   type: string
  */
 
-subscriptionRoutes.post('/', async (req, res) => {
+subscriptionRoutes.route("/createSubscription").post( async (req, res) => {
   const { nameOfSub, userId, planId, endDate, renewalDate, price  } = req.body; // Destructure the request body. startDate not included cuz it automatically sets to now
   try {
     const newSubscription = await createSubscription(nameOfSub, userId, planId, endDate, renewalDate, price );
@@ -120,7 +120,7 @@ subscriptionRoutes.post('/', async (req, res) => {
 // Get all subscriptions
 /**
  * @swagger
- * /subscriptions:
+ * /api/v1/subscriptions/retrieveSubscriptions:
  *   get:
  *     summary: Retrieve all subscriptions
  *     tags: [Subscriptions]
@@ -144,7 +144,7 @@ subscriptionRoutes.post('/', async (req, res) => {
  *                   type: string
  */
 
-subscriptionRoutes.get('/', async (req, res) => {
+subscriptionRoutes.route("/retrieveSubscriptions").get( async (req, res) => {
   try {
     const subscriptions = await getSubscriptions();
     res.status(200).json(subscriptions);
@@ -156,7 +156,7 @@ subscriptionRoutes.get('/', async (req, res) => {
 // Find a subscription by ID
 /**
  * @swagger
- * /subscriptions/{id}:
+ * /api/v1/subscriptions/findSubscritption/{id}:
  *   get:
  *     summary: Find a subscription by ID
  *     tags: [Subscriptions]
@@ -194,7 +194,7 @@ subscriptionRoutes.get('/', async (req, res) => {
  *                   type: string
  */
 
-subscriptionRoutes.get('/:id', async (req, res) => {
+subscriptionRoutes.route("/findSubscription/:id").get( async (req, res) => {
   const { id } = req.params; // Gets the subscription ID from the request parameters
   try {
     const foundSubscription = await findSubscription(id);
@@ -211,7 +211,7 @@ subscriptionRoutes.get('/:id', async (req, res) => {
 // Update a subscription
 /**
  * @swagger
- * /subscriptions/{id}:
+ * /api/v1/subscriptions/updateSubscription/{id}:
  *   put:
  *     summary: Update a subscription
  *     tags: [Subscriptions]
@@ -255,7 +255,7 @@ subscriptionRoutes.get('/:id', async (req, res) => {
  *                   type: string
  */
 
-subscriptionRoutes.put('/:id', async (req, res) => {
+subscriptionRoutes.route("/updateSubscription/:id").put( async (req, res) => {
   const { id } = req.params; 
   const updates = req.body; 
   try {
@@ -273,7 +273,7 @@ subscriptionRoutes.put('/:id', async (req, res) => {
 // Cancel a subscription
 /**
  * @swagger
- * /subscriptions/cancel/{id}:
+ * /api/v1/subscriptions/cancelSubscription/{id}:
  *   patch:
  *     summary: Cancel a subscription
  *     tags: [Subscriptions]
@@ -311,7 +311,7 @@ subscriptionRoutes.put('/:id', async (req, res) => {
  *                   type: string
  */
 
-subscriptionRoutes.patch('/cancel/:id', async (req, res) => { //changes subscription status to canceled
+subscriptionRoutes.route("/cancelSubscription/:id").patch( async (req, res) => { //changes subscription status to canceled
   const { id } = req.params;
   try {
     const canceledSubscription = await cancelSubscription(id);
@@ -327,7 +327,7 @@ subscriptionRoutes.patch('/cancel/:id', async (req, res) => { //changes subscrip
 // Renew a subscription
 /**
  * @swagger
- * /subscriptions/renew/{id}:
+ * /api/v1/subscriptions/renewSubscription/{id}:
  *   patch:
  *     summary: Renew a subscription
  *     tags: [Subscriptions]
@@ -365,7 +365,7 @@ subscriptionRoutes.patch('/cancel/:id', async (req, res) => { //changes subscrip
  *                   type: string
  */
 
-subscriptionRoutes.patch('/renew/:id', async (req, res) => { //changes subscription status to active
+subscriptionRoutes.route("/renewSubscription/:id").patch( async (req, res) => { //changes subscription status to active
   const { id } = req.params;
   try {
     const renewedSubscription = await renewSubscription(id);
@@ -381,7 +381,7 @@ subscriptionRoutes.patch('/renew/:id', async (req, res) => { //changes subscript
 // Inactivate a subscription
 /**
  * @swagger
- * /subscriptions/inactivate/{id}:
+ * /api/v1/subscriptions/inactivateSubscription/{id}:
  *   patch:
  *     summary: Inactivate a subscription
  *     tags: [Subscriptions]
@@ -419,7 +419,7 @@ subscriptionRoutes.patch('/renew/:id', async (req, res) => { //changes subscript
  *                   type: string
  */
 
-subscriptionRoutes.patch('/inactivate/:id', async (req, res) => { // changes subscription status to inactive
+subscriptionRoutes.route("/inactivateSubscription/:id").patch( async (req, res) => { // changes subscription status to inactive
   const { id } = req.params;
   try {
     const inactivatedSubscription = await inactivateSubscription(id);
@@ -435,7 +435,7 @@ subscriptionRoutes.patch('/inactivate/:id', async (req, res) => { // changes sub
 // Delete a subscription
 /**
  * @swagger
- * /subscriptions/{id}:
+ * /api/v1/subscriptions/deleteSubscription/{id}:
  *   delete:
  *     summary: Delete a subscription
  *     tags: [Subscriptions]
@@ -476,7 +476,7 @@ subscriptionRoutes.patch('/inactivate/:id', async (req, res) => { // changes sub
  *                   type: string
  */
 
-subscriptionRoutes.delete('/:id', async (req, res) => {
+subscriptionRoutes.route("/deleteSubscription/:id").delete( async (req, res) => {
   const { id } = req.params;
   try {
     const deletedSubscription = await deleteSubscription(id);
