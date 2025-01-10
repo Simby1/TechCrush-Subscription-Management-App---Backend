@@ -6,6 +6,7 @@ import requestLogger from "./app/utils/requestLogger.js";
 import logger from "./app/utils/logger.js";
 import "express-async-errors";
 import "dotenv/config";
+import mongoSanitize from "express-mongo-sanitize";
 import { router as authRouter } from "./app/routes/authRoutes.js";
 import { router as userRouter } from "./app/routes/userRoutes.js";
 import { scheduleNotifications } from "./app/utils/notifScheduler.js";
@@ -24,16 +25,16 @@ const app = express();
 app.use(cors());
 
 // Enable trust proxy to correctly handle X-Forwarded-For header
-// app.set("trust proxy", 1);
+app.set("trust proxy", 1);
 // Rate limiting security functionality
-// let limiter = rateLimit({
-//   max: 1000,
-//   windowMs: 60 * 60 * 1000,
-//   message:
-//     "We have received too many requests from this IP. Please try again after one hour.",
-// });
+let limiter = rateLimit({
+  max: 1000,
+  windowMs: 60 * 60 * 1000,
+  message:
+    "We have received too many requests from this IP. Please try again after one hour.",
+});
 
-// app.use("/api", limiter);
+app.use("/api", limiter);
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
 // Swagger configuration
@@ -66,6 +67,8 @@ app.use(requestLogger);
 app.use(helmet());
 
 app.use(express.json({ limit: "10kb" }));
+// Data sanitization against NoSQL query injection
+app.use(mongoSanitize());
 app.use("/api/v1/subscriptions", subscriptionRoutes);
 app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/plans", planRoutes);
