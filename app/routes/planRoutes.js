@@ -42,7 +42,7 @@ const planRoutes = express.Router();
 // Create a new plan
 /**
  * @swagger
- * /plans:
+ * /api/v1/plans/createPlan:
  *   post:
  *     summary: Create a new plan
  *     tags: [Plans]
@@ -75,7 +75,7 @@ const planRoutes = express.Router();
  *                   type: string
  */
 
-planRoutes.post('/', async (req, res) => {
+planRoutes.route("/createPlan").post( async (req, res) => {
   const planData = req.body;
   try {
     const newPlan = await createPlan(planData); 
@@ -88,7 +88,7 @@ planRoutes.post('/', async (req, res) => {
 // Get all plans
 /**
  * @swagger
- * /plans:
+ * /api/v1/plans/retrievePlans:
  *   get:
  *     summary: Retrieve all plans
  *     tags: [Plans]
@@ -112,7 +112,7 @@ planRoutes.post('/', async (req, res) => {
  *                   type: string
  */
 
-planRoutes.get('/', async (req, res) => {
+planRoutes.route("/retrievePlans").get( async (req, res) => {
   try {
     const plans = await getPlans(); 
     res.status(200).json(plans); 
@@ -124,7 +124,7 @@ planRoutes.get('/', async (req, res) => {
 // Find a plan by ID
 /**
  * @swagger
- * /plans/{id}:
+ * /api/v1/plans/findPlan/{id}:
  *   get:
  *     summary: Find a plan by ID
  *     tags: [Plans]
@@ -162,7 +162,7 @@ planRoutes.get('/', async (req, res) => {
  *                   type: string
  */
 
-planRoutes.get('/:id', async (req, res) => {
+planRoutes.route("/findPlan/:id").get( async (req, res) => {
   const { id } = req.params; 
   try {
     const foundPlan = await findPlan(id); 
@@ -179,7 +179,7 @@ planRoutes.get('/:id', async (req, res) => {
 // Update a plan by ID
 /**
  * @swagger
- * /plans/{id}:
+ * /api/v1/plans/updatePlan/{id}:
  *   put:
  *     summary: Update a plan by ID
  *     tags: [Plans]
@@ -226,7 +226,7 @@ planRoutes.get('/:id', async (req, res) => {
  *                   type: string
  */
 
-planRoutes.put('/:id', async (req, res) => {
+planRoutes.route("/updatePlan/:id").put( async (req, res) => {
   const { id } = req.params; 
   const updates = req.body; 
   try {
@@ -244,7 +244,7 @@ planRoutes.put('/:id', async (req, res) => {
 // Delete a plan by ID
 /**
  * @swagger
- * /plans/{id}:
+ * /api/v1/plans/deletePlan/{id}:
  *   delete:
  *     summary: Delete a plan by ID
  *     tags: [Plans]
@@ -285,7 +285,7 @@ planRoutes.put('/:id', async (req, res) => {
  *                   type: string
  */
 
-planRoutes.delete('/:id', async (req, res) => {
+planRoutes.route("/deletePlan/:id").delete( async (req, res) => {
   const { id } = req.params; 
   try {
     const result = await deletePlan(id); 
