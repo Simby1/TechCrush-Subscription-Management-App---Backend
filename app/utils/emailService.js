@@ -7,7 +7,7 @@ const sendEmail_SendGrid = async (option) => {
   // Email details
   const msg = {
     to: option.email,
-    from: "TSMA Support<support@tsma.com>",
+    from: "okedairosemawon@gmail.com",
     subject: option.subject,
     text: option.text,
     html: option.message,
