@@ -91,3 +91,26 @@ export const deleteProfile = async (req, res, next) => {
   });
   res.status(204).json({ status: "success", data: null });
 };
+
+export const getDashboard = async (req, res, next) => {
+  // 1. Authenticate the user
+  if (!req.user) {
+    return next(createCustomError("Unauthorized Access. Please log in!", 401));
+  }
+  // 2. Retrieve Dashboard data
+  const user = req.user;
+  // 3. Send the data back to the frontend
+  res.status(200).json({
+    status: "success",
+    data: {
+      user: {
+        _id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+      },
+    },
+  });
+};
