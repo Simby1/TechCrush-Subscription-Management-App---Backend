@@ -59,6 +59,19 @@ export const login = async (req, res, next) => {
   createSendResponse(user, 200, res);
 };
 
+export const logout = async (req, res) => {
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    secure: true, // Set to true in production
+    expires: new Date(0), // Set the cookie to expire immediately
+  });
+
+  res.status(200).json({
+    status: "success",
+    message: "You have been logged out successfully!",
+  });
+};
+
 export const protectRoute = async (req, res, next) => {
   // 1. Read the token and check if it exists
   const testToken = req.headers.authorization;
