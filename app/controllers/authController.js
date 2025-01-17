@@ -21,7 +21,7 @@ export const createSendResponse = (user, statusCode, res) => {
   const token = signToken(user._id);
   res.cookie("jwt", token, {
     maxAge: parseInt(process.env.LOGIN_EXPIRES),
-    // secure: true,
+    secure: true,
     httpOnly: true,
   });
   const sanitizedUser = user.sanitize();
